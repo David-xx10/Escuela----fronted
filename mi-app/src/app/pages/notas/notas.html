@@ -1,0 +1,91 @@
+<header class="crud-barra">
+  <h2>Notas</h2>
+
+  <form class="filtro" (submit)="$event.preventDefault(); buscarPorId()">
+    <input
+      [(ngModel)]="idFiltro"
+      name="idFiltro"
+      placeholder="Filtrar por ID"
+      autocomplete="off"
+    />
+    <button type="submit" [disabled]="cargando()">Buscar</button>
+    <button type="button" class="secundario" (click)="limpiarFiltro()" [disabled]="cargando()">
+      Todos
+    </button>
+  </form>
+
+  <button type="button" (click)="abrirCrear()">+ Crear</button>
+</header>
+
+@if (mensaje() && !popupAbierto()) {
+  <p class="mensaje" [class.error]="esError()">{{ mensaje() }}</p>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Estudiante</th>
+      <th>Evaluación</th>
+      <th>Valor</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (fila of filas(); track fila.id_nota) {
+      <tr>
+        <td>{{ fila.id_nota }}</td>
+        <td>{{ fila.id_estudiante }}</td>
+        <td>{{ fila.id_evaluacion }}</td>
+        <td>{{ fila.valor }}</td>
+        <td class="acciones">
+          <button type="button" (click)="abrirEditar(fila)">Editar</button>
+          <button type="button" class="peligro" (click)="eliminar(fila)">Eliminar</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+@if (popupAbierto()) {
+  <div class="fondo-popup" (click)="cerrarPopup()">
+    <form class="popup" (click)="$event.stopPropagation()" (ngSubmit)="guardar()">
+      <h3>{{ modo() === 'crear' ? 'Crear nota' : 'Editar nota' }}</h3>
+
+      @if (mensaje()) {
+        <p class="mensaje" [class.error]="esError()">{{ mensaje() }}</p>
+      }
+
+      <label class="campo">
+        <span>ID nota</span>
+        <input
+          [(ngModel)]="formulario.id_nota"
+          name="id_nota"
+          type="number"
+          required
+          [disabled]="modo() === 'editar'"
+        />
+      </label>
+
+      <label class="campo">
+        <span>ID estudiante</span>
+        <input [(ngModel)]="formulario.id_estudiante" name="id_estudiante" type="number" required />
+      </label>
+
+      <label class="campo">
+        <span>ID evaluación</span>
+        <input [(ngModel)]="formulario.id_evaluacion" name="id_evaluacion" type="number" required />
+      </label>
+
+      <label class="campo">
+        <span>Valor</span>
+        <input [(ngModel)]="formulario.valor" name="valor" type="number" step="0.1" required />
+      </label>
+
+      <div class="popup-acciones">
+        <button type="button" class="secundario" (click)="cerrarPopup()">Cancelar</button>
+        <button type="submit" [disabled]="cargando()">Guardar</button>
+      </div>
+    </form>
+  </div>
+}
