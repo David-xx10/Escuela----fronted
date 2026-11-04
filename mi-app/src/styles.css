@@ -200,4 +200,61 @@ th {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
-} 
+}
+
+/* ===== Sidebar retráctil (nuevo) ===== */
+.sidebar {
+  transition: width 0.25s ease;
+  overflow: hidden;
+}
+
+.sidebar-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.btn-menu {
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.btn-menu:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.inicial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.layout.retraido .sidebar {
+  width: 72px;
+  padding: 24px 8px;
+}
+
+.layout.retraido .sidebar-cabecera {
+  justify-content: center;
+}
+
+.layout.retraido .sidebar a {
+  justify-content: center;
+  padding: 10px 0;
+}
