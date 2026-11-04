@@ -8,5 +8,5 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './shell.css',
 })
 export class Shell {
-  readonly menu = [{ ruta: '/personas', etiqueta: 'Personas'}]
+  readonly menu = [{ ruta: '/matriculas', etiqueta: 'Matriculas' }];
 }

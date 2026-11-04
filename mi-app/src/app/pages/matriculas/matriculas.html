@@ -1,0 +1,83 @@
+<header class="crud-barra">
+  <h2>Matriculas</h2>
+
+  <form class="filtro" (submit)="$event.preventDefault(); buscarPorId()">
+    <input
+      [(ngModel)]="idFiltro"
+      name="idFiltro"
+      placeholder="Filtrar por ID"
+      autocomplete="off"
+    />
+    <button type="submit" [disabled]="cargando()">Buscar</button>
+    <button type="button" class="secundario" (click)="limpiarFiltro()" [disabled]="cargando()">
+      Todos
+    </button>
+  </form>
+
+  <button type="button" (click)="abrirCrear()">+ Crear</button>
+</header>
+
+@if (mensaje()) {
+  <p class="mensaje" [class.error]="esError()">{{ mensaje() }}</p>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Estudiante</th>
+      <th>Curso</th>
+      <th>Grupo</th>
+      <th>Fecha</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (fila of filas(); track fila.id_matricula) {
+      <tr>
+        <td class="id">{{ fila.id_matricula }}</td>
+        <td>{{ fila.id_estudiante }}</td>
+        <td>{{ fila.id_curso ?? '—' }}</td>
+        <td>{{ fila.id_grupo ?? '—' }}</td>
+        <td>{{ fila.fecha_matricula }}</td>
+        <td class="acciones">
+          <button type="button" (click)="abrirEditar(fila)">Editar</button>
+          <button type="button" class="peligro" (click)="eliminar(fila)">Eliminar</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+@if (popupAbierto()) {
+  <div class="fondo-popup" (click)="cerrarPopup()">
+    <form class="popup" (click)="$event.stopPropagation()" (ngSubmit)="guardar()">
+      <h3>{{ modo() === 'crear' ? 'Crear matricula' : 'Editar matricula' }}</h3>
+
+      <label class="campo">
+        <span>ID estudiante</span>
+        <input [(ngModel)]="formulario.id_estudiante" name="id_estudiante" type="number" required />
+      </label>
+
+      <label class="campo">
+        <span>ID curso</span>
+        <input [(ngModel)]="formulario.id_curso" name="id_curso" type="number" placeholder="Opcional" />
+      </label>
+
+      <label class="campo">
+        <span>ID grupo</span>
+        <input [(ngModel)]="formulario.id_grupo" name="id_grupo" type="number" placeholder="Opcional" />
+      </label>
+
+      <label class="campo">
+        <span>Fecha de matricula</span>
+        <input [(ngModel)]="formulario.fecha_matricula" name="fecha_matricula" type="date" required />
+      </label>
+
+      <div class="popup-acciones">
+        <button type="button" class="secundario" (click)="cerrarPopup()">Cancelar</button>
+        <button type="submit" [disabled]="cargando()">Guardar</button>
+      </div>
+    </form>
+  </div>
+}
