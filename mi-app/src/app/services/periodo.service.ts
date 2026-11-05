@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environments';
 import { PeriodoAcademico, PeriodoInput } from '../models/periodo.model';
 
 @Injectable({ providedIn: 'root' })
 export class PeriodoService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://127.0.0.1:8000/periodos-academicos/';
+  private readonly baseUrl = `${environment.apiUrl}/periodos-academicos/`;
 
   getAll(): Observable<PeriodoAcademico[]> {
     return this.http.get<PeriodoAcademico[]>(this.baseUrl);

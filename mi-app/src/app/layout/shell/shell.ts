@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -8,11 +8,22 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './shell.css',
 })
 export class Shell {
+  readonly expandido = signal(true);
+
   readonly menu = [
     { ruta: '/matriculas', etiqueta: 'Matriculas' },
-    { ruta: '/cursos', etiqueta: 'Curso' },
-    { ruta: '/facultades', etiqueta: 'Facultad' },
-    { ruta: '/periodos', etiqueta: 'Periodo' },
-    { ruta: '/grupos', etiqueta: 'Grupo' },
+    { ruta: '/facultades', etiqueta: 'Facultades' },
+    { ruta: '/cursos', etiqueta: 'Cursos' },
+    { ruta: '/grupos', etiqueta: 'Grupos' },
+    { ruta: '/periodos', etiqueta: 'Periodos' },
+    { ruta: '/estudiantes', etiqueta: 'Estudiantes' },
+    { ruta: '/profesores', etiqueta: 'Profesores' },
+    { ruta: '/notas', etiqueta: 'Notas' },
+    { ruta: '/evaluaciones', etiqueta: 'Evaluaciones' },
+    { ruta: '/periodos-academicos', etiqueta: 'Periodos academicos' },
   ];
+
+  alternar(): void {
+    this.expandido.update((valor) => !valor);
+  }
 }

@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environments';
 import { Grupo, GrupoInput } from '../models/grupo.model';
 
 @Injectable({ providedIn: 'root' })
 export class GrupoService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://127.0.0.1:8000/grupos/';
+  private readonly baseUrl = `${environment.apiUrl}/grupos/`;
 
   getAll(): Observable<Grupo[]> {
     return this.http.get<Grupo[]>(this.baseUrl);

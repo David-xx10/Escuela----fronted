@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environments';
 import { Curso, CursoInput } from '../models/curso.model';
 
 @Injectable({ providedIn: 'root' })
 export class CursoService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://127.0.0.1:8000/cursos/';
+  private readonly baseUrl = `${environment.apiUrl}/cursos/`;
 
   getAll(): Observable<Curso[]> {
     return this.http.get<Curso[]>(this.baseUrl);

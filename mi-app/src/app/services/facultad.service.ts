@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environments';
 import { Facultad, FacultadInput } from '../models/facultad.model';
 
 @Injectable({ providedIn: 'root' })
 export class FacultadService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://127.0.0.1:8000/facultades/';
+  private readonly baseUrl = `${environment.apiUrl}/facultades/`;
 
   getAll(): Observable<Facultad[]> {
     return this.http.get<Facultad[]>(this.baseUrl);
