@@ -1,9 +1,28 @@
-<div class="layout">
+<div class="layout" [class.retraido]="!expandido()">
   <aside class="sidebar">
-    <h1>Escuela</h1>
+    <div class="sidebar-cabecera">
+      @if (expandido()) {
+        <h1>Escuela</h1>
+      }
+      <button
+        type="button"
+        class="btn-menu"
+        (click)="alternar()"
+        [attr.aria-label]="expandido() ? 'Retraer menú' : 'Expandir menú'"
+        [attr.aria-expanded]="expandido()"
+      >
+        {{ expandido() ? '«' : '»' }}
+      </button>
+    </div>
+
     <nav>
       @for (item of menu; track item.ruta) {
-        <a [routerLink]="item.ruta" routerLinkActive="activo">{{ item.etiqueta }}</a>
+        <a [routerLink]="item.ruta" routerLinkActive="activo" [title]="item.etiqueta">
+          <span class="inicial">{{ item.etiqueta.slice(0, 2) }}</span>
+          @if (expandido()) {
+            <span class="texto">{{ item.etiqueta }}</span>
+          }
+        </a>
       }
     </nav>
   </aside>
