@@ -8,6 +8,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './shell.css',
 })
 export class Shell {
+
   readonly expandido = signal(true);
 
   readonly menu = [
@@ -15,6 +16,8 @@ export class Shell {
     { ruta: '/estudiantes', etiqueta: 'Estudiantes' },
     { ruta: '/profesores', etiqueta: 'Profesores' },
     { ruta: '/notas', etiqueta: 'Notas' },
+    { ruta: '/evaluaciones', etiqueta: 'Evaluaciones' },
+    { ruta: '/periodos-academicos', etiqueta: 'Periodos Academicos' },
   ];
 
   alternar(): void {
