@@ -2,11 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import {
-  Evaluacion,
-  EvaluacionCreate,
-  EvaluacionUpdate,
-} from '../../models/evaluacion.model';
+import { Evaluacion, EvaluacionCreate } from '../../models/evaluacion.model';
 import { EvaluacionService } from '../../services/evaluacion.service';
 
 type ModoPopup = 'crear' | 'editar';
@@ -45,7 +41,7 @@ export class Evaluaciones implements OnInit {
     this.cargando.set(true);
     this.evaluacionService.obtener(id).subscribe({
       next: (evaluacion) => {
-        this.filas.set([evaluacion]);
+        this.filas.set([this.mapearFila(evaluacion)]);
         this.avisar('');
         this.cargando.set(false);
       },
@@ -73,12 +69,12 @@ export class Evaluaciones implements OnInit {
     this.modo.set('editar');
     this.idEditando = String(fila.id_evaluacion);
     this.formulario = {
-      id_estudiante: fila.id_estudiante,
+      id_estudiante: fila.id_estudiante ?? '',
       id_curso: fila.id_curso ?? '',
       id_grupo: fila.id_grupo ?? '',
-      tipo_evaluacion: fila.tipo_evaluacion,
-      nota: fila.nota,
-      fecha_evaluacion: fila.fecha_evaluacion,
+      tipo_evaluacion: fila.tipo_evaluacion ?? fila.tipo ?? '',
+      nota: fila.nota ?? fila.valor_maximo ?? '',
+      fecha_evaluacion: fila.fecha_evaluacion ?? fila.fecha ?? '',
     };
     this.popupAbierto.set(true);
   }
@@ -94,15 +90,17 @@ export class Evaluaciones implements OnInit {
     }
 
     this.cargando.set(true);
+    const payload = this.prepararPayload();
+
     if (this.modo() === 'crear') {
-      this.evaluacionService.crear(this.formulario).subscribe({
+      this.evaluacionService.crear(payload).subscribe({
         next: () => this.despuesDeGuardar('Evaluacion creada'),
         error: (error: HttpErrorResponse) => this.falloGuardar(error),
       });
       return;
     }
 
-    this.evaluacionService.actualizar(this.idEditando, this.datosEdicion()).subscribe({
+    this.evaluacionService.actualizar(this.idEditando, payload).subscribe({
       next: () => this.despuesDeGuardar('Evaluacion actualizada'),
       error: (error: HttpErrorResponse) => this.falloGuardar(error),
     });
@@ -131,8 +129,9 @@ export class Evaluaciones implements OnInit {
     this.cargando.set(true);
     this.evaluacionService.listar().subscribe({
       next: (filas) => {
-        this.filas.set(filas ?? []);
-        this.avisar(filas.length ? '' : 'No hay registros');
+        const normalizadas = (filas ?? []).map((fila) => this.mapearFila(fila));
+        this.filas.set(normalizadas);
+        this.avisar(normalizadas.length ? '' : 'No hay registros');
         this.cargando.set(false);
       },
       error: (error: HttpErrorResponse) => {
@@ -164,26 +163,76 @@ export class Evaluaciones implements OnInit {
   }
 
   private formularioValido(): boolean {
-    const datos = this.formulario;
-    const idEstudiante = String(datos.id_estudiante ?? '').trim();
-    const tipo = String(datos.tipo_evaluacion ?? '').trim();
-    const nota = String(datos.nota ?? '').trim();
-    const fecha = String(datos.fecha_evaluacion ?? '').trim();
+    const idEstudiante = String(this.formulario.id_estudiante ?? '').trim();
+    const idGrupo = String(this.formulario.id_grupo ?? '').trim();
+    const tipo = String(this.formulario.tipo_evaluacion ?? '').trim();
+    const nota = String(this.formulario.nota ?? '').trim();
+    const fecha = String(this.formulario.fecha_evaluacion ?? '').trim();
 
-    return Boolean(idEstudiante && tipo && nota && fecha);
+    return Boolean(idEstudiante && idGrupo && tipo && nota && fecha);
   }
 
-  private datosEdicion(): EvaluacionUpdate {
-    const datos: EvaluacionUpdate = {
-      id_estudiante: this.formulario.id_estudiante,
-      id_curso: this.formulario.id_curso ?? null,
-      id_grupo: this.formulario.id_grupo ?? null,
-      tipo_evaluacion: this.formulario.tipo_evaluacion.trim(),
-      nota: this.formulario.nota,
-      fecha_evaluacion: this.formulario.fecha_evaluacion.trim(),
-    };
+  private prepararPayload(): EvaluacionCreate {
+    const idEstudiante = this.normalizarEntero(this.formulario.id_estudiante);
+    const idCurso = this.normalizarEnteroOpcional(this.formulario.id_curso);
+    const idGrupo = this.normalizarEntero(this.formulario.id_grupo);
+    const tipo = String(this.formulario.tipo_evaluacion ?? '').trim();
+    const nota = this.normalizarNumero(this.formulario.nota);
+    const fecha = String(this.formulario.fecha_evaluacion ?? '').trim();
 
-    return datos;
+    const descripcion = [
+      idEstudiante !== null ? `Estudiante ${idEstudiante}` : 'Estudiante sin id',
+      idCurso !== null ? `Curso ${idCurso}` : 'Curso opcional',
+      tipo,
+    ].join(' - ');
+
+    return {
+      nombre: tipo || 'Evaluación',
+      descripcion,
+      tipo,
+      id_grupo: idGrupo ?? 0,
+      fecha,
+      valor_maximo: nota ?? 0,
+    } as EvaluacionCreate;
+  }
+
+  private mapearFila(fila: Evaluacion): Evaluacion {
+    return {
+      id_evaluacion: fila.id_evaluacion,
+      id_estudiante: fila.id_estudiante ?? '',
+      id_curso: fila.id_curso ?? '',
+      id_grupo: fila.id_grupo ?? '',
+      tipo_evaluacion: fila.tipo_evaluacion ?? fila.tipo ?? '',
+      nota: fila.nota ?? fila.valor_maximo ?? '',
+      fecha_evaluacion: fila.fecha_evaluacion ?? fila.fecha ?? '',
+    };
+  }
+
+  private normalizarEntero(valor: number | string | null | undefined): number | null {
+    if (valor === null || valor === undefined || String(valor).trim() === '') {
+      return null;
+    }
+
+    const numero = Number(valor);
+    return Number.isInteger(numero) ? numero : null;
+  }
+
+  private normalizarEnteroOpcional(valor: number | string | null | undefined): number | null {
+    if (valor === null || valor === undefined || String(valor).trim() === '') {
+      return null;
+    }
+
+    const numero = Number(valor);
+    return Number.isInteger(numero) ? numero : null;
+  }
+
+  private normalizarNumero(valor: number | string | null | undefined): number | null {
+    if (valor === null || valor === undefined || String(valor).trim() === '') {
+      return null;
+    }
+
+    const numero = Number(valor);
+    return Number.isFinite(numero) ? numero : null;
   }
 
   private formularioVacio(): EvaluacionCreate {
@@ -213,7 +262,7 @@ export class Evaluaciones implements OnInit {
       return 'Esa evaluacion ya existe';
     }
     if (error.status === 422) {
-      return 'Revisa los datos. El ID debe ser un numero entero.';
+      return 'Revisa los datos. El formato de la evaluacion no coincide con la API.';
     }
     const detail = error.error?.detail;
     if (typeof detail === 'string') {
