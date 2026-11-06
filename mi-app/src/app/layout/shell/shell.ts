@@ -15,7 +15,6 @@ export class Shell {
     { ruta: '/facultades', etiqueta: 'Facultades' },
     { ruta: '/cursos', etiqueta: 'Cursos' },
     { ruta: '/grupos', etiqueta: 'Grupos' },
-    { ruta: '/periodos', etiqueta: 'Periodos' },
     { ruta: '/estudiantes', etiqueta: 'Estudiantes' },
     { ruta: '/profesores', etiqueta: 'Profesores' },
     { ruta: '/notas', etiqueta: 'Notas' },

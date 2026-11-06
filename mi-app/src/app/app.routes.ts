@@ -6,7 +6,6 @@ import { Matriculas } from './pages/matriculas/matriculas';
 import { Facultades } from './pages/facultades/facultades';
 import { Cursos } from './pages/cursos/cursos';
 import { Grupos } from './pages/grupos/grupos';
-import { Periodos } from './pages/periodos/periodos';
 import { Estudiantes } from './pages/estudiantes/estudiantes';
 import { Profesores } from './pages/profesores/profesores';
 import { Notas } from './pages/notas/notas';
@@ -22,7 +21,6 @@ export const routes: Routes = [
       { path: 'facultades', component: Facultades },
       { path: 'cursos', component: Cursos },
       { path: 'grupos', component: Grupos },
-      { path: 'periodos', component: Periodos },
       { path: 'estudiantes', component: Estudiantes },
       { path: 'profesores', component: Profesores },
       { path: 'notas', component: Notas },
