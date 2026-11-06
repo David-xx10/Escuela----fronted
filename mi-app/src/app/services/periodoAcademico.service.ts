@@ -7,6 +7,7 @@ import {
   PeriodoAcademicoCreate,
   PeriodoAcademicoUpdate,
 } from '../models/periodoAcademico.model';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ import {
 export class PeriodoAcademicoService {
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl = 'http://localhost:8000/periodos-academicos';
+  private readonly baseUrl = `${environment.apiUrl}/periodos-academicos`;
 
   listar(): Observable<PeriodoAcademico[]> {
     return this.http.get<PeriodoAcademico[]>(this.baseUrl);

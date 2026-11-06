@@ -7,6 +7,7 @@ import {
   EvaluacionCreate,
   EvaluacionUpdate,
 } from '../models/evaluacion.model';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ import {
 export class EvaluacionService {
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl = 'http://localhost:8000/evaluaciones';
+  private readonly baseUrl = `${environment.apiUrl}/evaluaciones`;
 
   listar(): Observable<Evaluacion[]> {
     return this.http.get<Evaluacion[]>(this.baseUrl);

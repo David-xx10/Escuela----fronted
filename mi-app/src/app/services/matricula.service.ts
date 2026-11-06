@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environments';
 import { Matricula, MatriculaCreate, MatriculaUpdate } from '../models/matricula.model';
 
 @Injectable({
@@ -10,7 +11,7 @@ import { Matricula, MatriculaCreate, MatriculaUpdate } from '../models/matricula
 export class MatriculaService {
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl = 'http://localhost:8000/matriculas';
+  private readonly baseUrl = `${environment.apiUrl}/matriculas`;
 
   listar(): Observable<Matricula[]> {
     return this.http.get<Matricula[]>(this.baseUrl);
