@@ -8,16 +8,18 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './shell.css',
 })
 export class Shell {
-
   readonly expandido = signal(true);
 
   readonly menu = [
     { ruta: '/matriculas', etiqueta: 'Matriculas' },
+    { ruta: '/facultades', etiqueta: 'Facultades' },
+    { ruta: '/cursos', etiqueta: 'Cursos' },
+    { ruta: '/grupos', etiqueta: 'Grupos' },
     { ruta: '/estudiantes', etiqueta: 'Estudiantes' },
     { ruta: '/profesores', etiqueta: 'Profesores' },
     { ruta: '/notas', etiqueta: 'Notas' },
     { ruta: '/evaluaciones', etiqueta: 'Evaluaciones' },
-    { ruta: '/periodos-academicos', etiqueta: 'Periodos Academicos' },
+    { ruta: '/periodos-academicos', etiqueta: 'Periodos academicos' },
   ];
 
   alternar(): void {
