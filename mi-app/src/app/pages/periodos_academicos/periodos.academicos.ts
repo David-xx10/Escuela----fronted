@@ -45,7 +45,7 @@ export class PeriodosAcademicos implements OnInit {
     this.cargando.set(true);
     this.periodoAcademicoService.obtener(id).subscribe({
       next: (periodo) => {
-        this.filas.set([periodo]);
+        this.filas.set([this.normalizarPeriodo(periodo)]);
         this.avisar('');
         this.cargando.set(false);
       },
@@ -70,13 +70,14 @@ export class PeriodosAcademicos implements OnInit {
   }
 
   abrirEditar(fila: PeriodoAcademico): void {
+    const filaNormalizada = this.normalizarPeriodo(fila);
     this.modo.set('editar');
-    this.idEditando = String(fila.id_periodo_academico);
+    this.idEditando = String(filaNormalizada.id_periodo_academico ?? '');
     this.formulario = {
-      nombre: fila.nombre,
-      fecha_inicio: fila.fecha_inicio,
-      fecha_fin: fila.fecha_fin,
-      estado: fila.estado,
+      nombre: filaNormalizada.nombre,
+      fecha_inicio: filaNormalizada.fecha_inicio,
+      fecha_fin: filaNormalizada.fecha_fin,
+      estado: filaNormalizada.estado,
     };
     this.popupAbierto.set(true);
   }
@@ -107,13 +108,21 @@ export class PeriodosAcademicos implements OnInit {
   }
 
   eliminar(fila: PeriodoAcademico): void {
-    const confirmar = confirm(`Eliminar el periodo academico ${fila.id_periodo_academico}?`);
+    const id = Number(
+      fila.id_periodo_academico ?? fila.id_periodo ?? (fila as { id?: number }).id ?? 0,
+    );
+    if (!Number.isFinite(id) || id <= 0) {
+      this.avisar('No se pudo identificar el periodo academico para eliminarlo.', true);
+      return;
+    }
+
+    const confirmar = confirm(`Eliminar el periodo academico ${id}?`);
     if (!confirmar) {
       return;
     }
 
     this.cargando.set(true);
-    this.periodoAcademicoService.eliminar(fila.id_periodo_academico).subscribe({
+    this.periodoAcademicoService.eliminar(id).subscribe({
       next: () => {
         this.avisar('Periodo academico eliminado');
         this.refrescar();
@@ -129,8 +138,9 @@ export class PeriodosAcademicos implements OnInit {
     this.cargando.set(true);
     this.periodoAcademicoService.listar().subscribe({
       next: (filas) => {
-        this.filas.set(filas ?? []);
-        this.avisar(filas.length ? '' : 'No hay registros');
+        const filasNormalizadas = (filas ?? []).map((fila) => this.normalizarPeriodo(fila));
+        this.filas.set(filasNormalizadas);
+        this.avisar(filasNormalizadas.length ? '' : 'No hay registros');
         this.cargando.set(false);
       },
       error: (error: HttpErrorResponse) => {
@@ -161,12 +171,64 @@ export class PeriodosAcademicos implements OnInit {
     this.cargando.set(false);
   }
 
+  private normalizarPeriodo(periodo: Partial<PeriodoAcademico> | null | undefined): PeriodoAcademico {
+    const datos = (periodo ?? {}) as Record<string, unknown>;
+    const id = Number(
+      datos['id_periodo_academico'] ?? datos['id_periodo'] ?? datos['id'] ?? 0,
+    );
+
+    return {
+      id_periodo_academico: Number.isFinite(id) && id > 0 ? id : undefined,
+      id_periodo: Number.isFinite(id) && id > 0 ? id : undefined,
+      nombre: String(datos['nombre'] ?? '').trim(),
+      fecha_inicio: this.normalizarFecha(datos['fecha_inicio'] ?? datos['fechaInicio']),
+      fecha_fin: this.normalizarFecha(datos['fecha_fin'] ?? datos['fechaFin']),
+      estado: this.normalizarEstado(datos['estado']),
+    };
+  }
+
+  private normalizarFecha(valor: unknown): string {
+    const texto = String(valor ?? '').trim();
+    if (!texto) {
+      return '';
+    }
+
+    const coincidencia = texto.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (coincidencia) {
+      return coincidencia[1];
+    }
+
+    const fecha = new Date(texto);
+    if (!Number.isNaN(fecha.getTime())) {
+      return fecha.toISOString().slice(0, 10);
+    }
+
+    return texto;
+  }
+
+  private normalizarEstado(valor: unknown): string {
+    const texto = String(valor ?? '').trim();
+    if (!texto) {
+      return 'activo';
+    }
+
+    const valorNormalizado = texto.toLowerCase();
+    if (['1', 'true', 'activo', 'activa', 'active'].includes(valorNormalizado)) {
+      return 'activo';
+    }
+    if (['0', 'false', 'inactivo', 'inactiva', 'inactive'].includes(valorNormalizado)) {
+      return 'inactivo';
+    }
+
+    return valorNormalizado.includes('inactivo') ? 'inactivo' : 'activo';
+  }
+
   private formularioValido(): boolean {
     const datos = this.formulario;
     const nombre = String(datos.nombre ?? '').trim();
     const fechaInicio = String(datos.fecha_inicio ?? '').trim();
     const fechaFin = String(datos.fecha_fin ?? '').trim();
-    const estado = String(datos.estado ?? '').trim();
+    const estado = this.normalizarEstado(datos.estado).trim();
 
     return Boolean(nombre && fechaInicio && fechaFin && estado);
   }
@@ -174,9 +236,9 @@ export class PeriodosAcademicos implements OnInit {
   private datosEdicion(): PeriodoAcademicoUpdate {
     return {
       nombre: this.formulario.nombre.trim(),
-      fecha_inicio: this.formulario.fecha_inicio.trim(),
-      fecha_fin: this.formulario.fecha_fin.trim(),
-      estado: this.formulario.estado.trim(),
+      fecha_inicio: this.normalizarFecha(this.formulario.fecha_inicio),
+      fecha_fin: this.normalizarFecha(this.formulario.fecha_fin),
+      estado: this.normalizarEstado(this.formulario.estado),
     };
   }
 
