@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environments';
 import { Usuario, UsuarioCreate, UsuarioUpdate } from '../models/usuario.model';
 
 @Injectable({
@@ -10,7 +11,7 @@ import { Usuario, UsuarioCreate, UsuarioUpdate } from '../models/usuario.model';
 export class UsuarioService {
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl = 'http://localhost:8000/usuarios';
+  private readonly baseUrl = `${environment.apiUrl}/usuarios`;
 
   listar(): Observable<{ data?: Usuario[] }> {
     return this.http.get<{ data?: Usuario[] }>(this.baseUrl);
