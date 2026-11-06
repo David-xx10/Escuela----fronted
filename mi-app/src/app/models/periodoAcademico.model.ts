@@ -1,5 +1,7 @@
 export interface PeriodoAcademico {
-  id_periodo_academico: number;
+  id_periodo_academico?: number;
+  id_periodo?: number;
+  id?: number;
   nombre: string;
   fecha_inicio: string;
   fecha_fin: string;

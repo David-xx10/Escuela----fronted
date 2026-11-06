@@ -1,11 +1,11 @@
 :root {
-  --sidebar: #0f2744;
-  --sidebar-activo: #1d4e89;
-  --fondo: #f4f6f8;
-  --borde: #d5dde6;
-  --texto: #1c2833;
-  --peligro: #9b2335;
-  --primario: #1d4e89;
+  --sidebar: #1e3a4b;
+  --sidebar-activo: #2f6f7d;
+  --fondo: #f5efe6;
+  --borde: #d9cab3;
+  --texto: #24313c;
+  --peligro: #c75d45;
+  --primario: #2d7a6f;
 }
 
 * {
@@ -16,7 +16,8 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  letter-spacing: 0.01em;
   color: var(--texto);
   background: var(--fondo);
 }
@@ -29,36 +30,41 @@ body {
 .sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: var(--sidebar);
+  background: linear-gradient(180deg, var(--sidebar) 0%, #173b48 100%);
   color: #fff;
   padding: 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  box-shadow: 8px 0 24px rgba(30, 58, 75, 0.18);
 }
 
 .sidebar h1 {
   margin: 0;
   font-size: 1.25rem;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-weight: 700;
 }
 
 .sidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .sidebar a {
-  color: #d6e4f5;
+  color: #e8f3f1;
   text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .sidebar a.activo,
 .sidebar a:hover {
-  background: var(--sidebar-activo);
+  background: linear-gradient(135deg, var(--sidebar-activo) 0%, rgba(255, 255, 255, 0.08) 100%);
   color: #fff;
+  transform: translateX(2px);
 }
 
 .contenido {
@@ -73,7 +79,12 @@ body {
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--borde);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(36, 49, 60, 0.05);
 }
 
 .crud-barra h2,
@@ -101,43 +112,80 @@ input {
 
 button {
   border: 0;
-  border-radius: 8px;
-  padding: 8px 14px;
-  background: var(--primario);
+  border-radius: 12px;
+  padding: 9px 16px;
+  background: linear-gradient(135deg, var(--primario) 0%, #3f9d96 100%);
   color: #fff;
   cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 16px rgba(45, 122, 111, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 18px rgba(45, 122, 111, 0.22);
 }
 
 button.secundario {
-  background: #5c6b7a;
+  background: linear-gradient(135deg, #6b7a84 0%, #4b5d69 100%);
+  box-shadow: 0 8px 16px rgba(75, 93, 105, 0.14);
 }
 
 button.peligro {
-  background: var(--peligro);
+  background: linear-gradient(135deg, var(--peligro) 0%, #eb8a70 100%);
+  box-shadow: 0 8px 16px rgba(199, 93, 69, 0.18);
 }
 
 button:disabled {
   opacity: 0.6;
   cursor: default;
+  transform: none;
+  box-shadow: none;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  background: #fff;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(36, 49, 60, 0.06);
 }
 
 th,
 td {
   text-align: left;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--borde);
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 th {
-  background: #e8eef5;
-  font-size: 0.85rem;
+  background: linear-gradient(180deg, #edf6f4 0%, #e8f0ee 100%);
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+tbody tr {
+  transition: background 0.15s ease;
+}
+
+tbody tr:hover {
+  background: rgba(45, 122, 111, 0.04);
+}
+
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 16px;
+}
+
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 16px;
 }
 
 .id {
@@ -155,19 +203,21 @@ th {
 
 .mensaje {
   margin: 0 0 12px;
-  padding: 10px 12px;
-  background: #e7f6ec;
-  border-radius: 8px;
+  padding: 12px 14px;
+  background: #e7f5ee;
+  border: 1px solid #cfead9;
+  border-radius: 12px;
 }
 
 .mensaje.error {
-  background: #fde8ea;
+  background: #fdf0ef;
+  border-color: #f5d2ce;
 }
 
 .fondo-popup {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 32, 0.45);
+  background: rgba(19, 35, 43, 0.52);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,31 +226,35 @@ th {
 
 .popup {
   background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  width: min(480px, 100%);
+  border-radius: 18px;
+  padding: 22px;
+  width: min(500px, 100%);
   max-height: 90vh;
   overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: 0 24px 46px rgba(30, 58, 75, 0.2);
+  border: 1px solid rgba(45, 122, 111, 0.08);
 }
 
 .campo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .campo span {
   font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .popup-acciones {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
-} 
+  margin-top: 8px;
+}
 /* ===== Sidebar retráctil ===== */
 .sidebar {
   transition: width 0.25s ease;

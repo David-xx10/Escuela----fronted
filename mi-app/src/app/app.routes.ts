@@ -18,6 +18,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'matriculas', pathMatch: 'full' },
       { path: 'matriculas', component: Matriculas },
+
       { path: 'facultades', component: Facultades },
       { path: 'cursos', component: Cursos },
       { path: 'grupos', component: Grupos },
